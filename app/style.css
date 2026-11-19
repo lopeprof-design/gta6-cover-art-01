@@ -1,12 +1,169 @@
-html, body { margin: 0; height: 100%; background: #f2f0f4; color: #1d1b22; font: 15px/1.4 system-ui, sans-serif; }
-.app { display: flex; gap: 32px; align-items: center; justify-content: center; height: 100%; padding: 24px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 280px; }
-.controls h1 { margin: 0; font-size: 28px; }
-.controls p { margin: 0; color: #5c5866; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-input[type=text] { font: inherit; padding: 8px; border: 1px solid #c9c4d1; border-radius: 6px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 6px; background: #1d1b22; color: #fff; cursor: pointer; }
-canvas { width: min(70vh, 60vw); height: min(70vh, 60vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; }
-body.shot-cover canvas { width: 100vw; height: 100vh; box-shadow: none; }
+/* Neon Coast Cover Studio — editor chrome. Dark violet stage, neon accents,
+   warm paper gutters inside the cover itself (drawn on canvas). */
+
+* { box-sizing: border-box; }
+
+:root {
+  --ink: #160a24;
+  --panel: #221133;
+  --panel-2: #2c1742;
+  --line: #4a2a66;
+  --text: #f6ecff;
+  --muted: #c9aede;
+  --pink: #ff5e7a;
+  --orange: #ff9a3d;
+  --cyan: #37f4ff;
+  --paper: #fff3e2;
+}
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: radial-gradient(1200px 600px at 80% -10%, #3d1658 0%, var(--ink) 55%);
+  color: var(--text);
+  font: 16px/1.45 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.studio { max-width: 1240px; margin: 0 auto; padding: 20px 22px 40px; }
+
+.masthead h1 {
+  margin: 4px 0 2px;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.masthead h1 span {
+  color: var(--cyan);
+  text-shadow: 0 0 18px rgba(55, 244, 255, 0.65);
+}
+.masthead p { margin: 0 0 18px; color: var(--muted); max-width: 640px; }
+
+.workbench { display: flex; gap: 22px; align-items: flex-start; }
+
+.controls {
+  flex: 0 0 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.group {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px 16px;
+}
+.group h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--orange);
+}
+.hint { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px dashed var(--line);
+  font-size: 14px;
+}
+.slot label { cursor: pointer; }
+.slot input[type="file"] { display: block; margin-top: 4px; max-width: 210px; font-size: 12px; }
+.slot-state { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.slot-state.loaded { color: var(--cyan); }
+
+.sample-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+button:hover { border-color: var(--cyan); }
+button.picked, button.active {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #fff;
+  font-weight: 700;
+}
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+.field { display: block; margin: 10px 0; font-size: 14px; }
+.field input[type="text"], .field select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.field input[type="range"] { display: block; width: 100%; accent-color: var(--pink); }
+.field span { color: var(--cyan); font-size: 13px; }
+
+.choice { border: 1px solid var(--line); border-radius: 9px; padding: 8px 12px 10px; margin: 0 0 10px; }
+.choice legend { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 0 6px; }
+.choice label { display: inline-block; margin: 4px 12px 4px 0; font-size: 14px; cursor: pointer; }
+.choice input { accent-color: var(--pink); }
+
+.export-row { display: flex; flex-direction: column; gap: 8px; }
+.export-row button {
+  background: linear-gradient(90deg, var(--pink), var(--orange));
+  border: none;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 11px 12px;
+}
+.export-row button:hover { filter: brightness(1.15); }
+
+#status { min-height: 1.3em; margin: 10px 0 0; font-size: 13px; color: var(--cyan); }
+
+.stage { flex: 1; min-width: 0; position: sticky; top: 16px; }
+#preview {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--line);
+  cursor: crosshair;
+  background: var(--paper);
+}
+.stage-hint { text-align: center; color: var(--muted); font-size: 13px; }
+
+/* Shot mode: cover alone, edge to edge, for reproducible screenshots. */
+body.shot-cover { background: #000; }
+body.shot-cover .masthead,
+body.shot-cover .controls,
+body.shot-cover .stage-hint { display: none; }
+body.shot-cover .studio { max-width: none; padding: 0; }
+body.shot-cover .workbench { display: block; }
+body.shot-cover .stage { position: static; }
+body.shot-cover #preview {
+  max-width: none;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: default;
+}
+
+@media (max-width: 860px) {
+  .workbench { flex-direction: column; }
+  .controls { flex: 1 1 auto; width: 100%; }
+  .stage { position: static; width: 100%; }
+}

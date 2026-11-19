@@ -3,20 +3,116 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Neon Coast Cover Studio</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
-  </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+<main class="studio">
+  <header class="masthead">
+    <h1>Neon Coast <span>Cover Studio</span></h1>
+    <p>Turn your photos into multi-panel sunset cover art. Everything runs offline &mdash; your photos never leave this machine.</p>
+  </header>
+
+  <div class="workbench">
+    <aside class="controls" id="controls">
+      <section class="group">
+        <h2>1 &middot; Photos</h2>
+        <p class="hint">Load up to three photos. One photo can fill every panel, or each panel can hold a different one.</p>
+        <div class="slot" data-slot="0">
+          <label>Photo 1 <input type="file" accept="image/*" data-photo-input="0"></label>
+          <span class="slot-state" data-slot-state="0">empty</span>
+        </div>
+        <div class="slot" data-slot="1">
+          <label>Photo 2 <input type="file" accept="image/*" data-photo-input="1"></label>
+          <span class="slot-state" data-slot-state="1">empty</span>
+        </div>
+        <div class="slot" data-slot="2">
+          <label>Photo 3 <input type="file" accept="image/*" data-photo-input="2"></label>
+          <span class="slot-state" data-slot-state="2">empty</span>
+        </div>
+        <div class="sample-row">
+          <span>No photos handy?</span>
+          <button type="button" id="sample-pier">Try pier sample</button>
+          <button type="button" id="sample-boulevard">Try boulevard sample</button>
+        </div>
+      </section>
+
+      <section class="group">
+        <h2>2 &middot; Panels</h2>
+        <p class="hint">Click a panel on the cover, or pick one here, then adjust it.</p>
+        <div class="row" id="panel-pick">
+          <button type="button" data-panel="0" class="picked">Panel 1</button>
+          <button type="button" data-panel="1">Panel 2</button>
+          <button type="button" data-panel="2">Panel 3</button>
+        </div>
+        <label class="field">Photo in this panel
+          <select id="panel-photo">
+            <option value="0">Photo 1</option>
+            <option value="1">Photo 2</option>
+            <option value="2">Photo 3</option>
+          </select>
+        </label>
+        <label class="field">Zoom <span id="zoom-val">100%</span>
+          <input type="range" id="panel-zoom" min="50" max="250" value="100">
+        </label>
+        <label class="field">Shift sideways <span id="ox-val">0</span>
+          <input type="range" id="panel-ox" min="-100" max="100" value="0">
+        </label>
+        <label class="field">Shift up / down <span id="oy-val">0</span>
+          <input type="range" id="panel-oy" min="-100" max="100" value="0">
+        </label>
+      </section>
+
+      <section class="group">
+        <h2>3 &middot; Look</h2>
+        <fieldset class="choice" id="layout-choice">
+          <legend>Layout</legend>
+          <label><input type="radio" name="layout" value="split" checked> Sunset Split</label>
+          <label><input type="radio" name="layout" value="triple"> Triple Slice</label>
+          <label><input type="radio" name="layout" value="stack"> Hero Stack</label>
+        </fieldset>
+        <fieldset class="choice" id="grade-choice">
+          <legend>Colour grade</legend>
+          <label><input type="radio" name="grade" value="sunset" checked> Sunset</label>
+          <label><input type="radio" name="grade" value="neon"> Neon Night</label>
+          <label><input type="radio" name="grade" value="dusk"> Palm Dusk</label>
+        </fieldset>
+        <label class="field">Caption
+          <input type="text" id="caption" maxlength="32" value="Neon Coast">
+        </label>
+        <label class="field">Kicker line
+          <input type="text" id="kicker" maxlength="28" value="A SUNSET STORY">
+        </label>
+        <label class="field">Caption size <span id="cap-size-val">100%</span>
+          <input type="range" id="caption-size" min="60" max="150" value="100">
+        </label>
+        <label class="field">Caption position
+          <select id="caption-pos">
+            <option value="auto">Auto (fits the layout)</option>
+            <option value="bottom">Bottom</option>
+            <option value="top">Top</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="group">
+        <h2>4 &middot; Export PNG</h2>
+        <p class="hint">One click, one file &mdash; saved straight to your downloads.</p>
+        <div class="export-row">
+          <button type="button" data-export="square">1080 &times; 1080</button>
+          <button type="button" data-export="portrait">1080 &times; 1350</button>
+          <button type="button" data-export="wide">1920 &times; 1080</button>
+        </div>
+        <p id="status" role="status"></p>
+      </section>
+    </aside>
+
+    <div class="stage">
+      <canvas id="preview" width="1080" height="1080" aria-label="Cover preview"></canvas>
+      <p class="stage-hint">Click a panel on the cover to select it.</p>
+      <div id="shot-info" hidden></div>
+    </div>
+  </div>
 </main>
 <script type="module" src="./src/main.js"></script>
 </body>
